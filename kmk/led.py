@@ -1,4 +1,7 @@
-import pulseio
+try:
+    import pulseio
+except ImportError:
+    pulseio = None
 from micropython import const
 
 import time
@@ -29,7 +32,7 @@ class led:
     user_animation = None
 
     def __init__(self, led_pin, config):
-        self.led = pulseio.PWMOut(led_pin)
+        self.led = pulseio.PWMOut(led_pin) if pulseio else None
         self.brightness_step = const(config['brightness_step'])
         self.brightness_limit = const(config['brightness_limit'])
         self.animation_mode = const(config['animation_mode'])

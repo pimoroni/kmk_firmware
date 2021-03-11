@@ -46,9 +46,9 @@ class KMKKeyboard:
     uart_pin = None
 
     # RGB config
+    rgb_config = rgb.rgb_config
     rgb = rgb.RGB
     rgb_pixel_pin = None
-    rgb_config = rgb.rgb_config
 
     # led config (mono color)
     led_pin = None
@@ -260,12 +260,16 @@ class KMKKeyboard:
         else:
             self.led = None
 
-        self.matrix = self.matrix_scanner(
-            cols=self.col_pins,
-            rows=self.row_pins,
-            diode_orientation=self.diode_orientation,
-            rollover_cols_every_rows=getattr(self, 'rollover_cols_every_rows', None),
-        )
+        if callable(self.matrix_scanner):
+            self.matrix = self.matrix_scanner(
+                cols=self.col_pins,
+                rows=self.row_pins,
+                diode_orientation=self.diode_orientation,
+                rollover_cols_every_rows=getattr(self, 'rollover_cols_every_rows', None),
+            )
+        else:
+            # Already a class instance
+            self.matrix = self.matrix_scanner
 
         # Compile string leader sequences
         for k, v in self.leader_dictionary.items():
